@@ -1,0 +1,194 @@
+# Week 18 - Day 1
+# Dynamic Programming (DP) in C++
+
+## 📌 What is Dynamic Programming?
+
+Dynamic Programming (DP) is an optimization technique used to solve problems by breaking them into smaller overlapping subproblems and storing their results to avoid repeated calculations.
+
+DP is mainly used when:
+1. Overlapping Subproblems exist.
+2. Optimal Substructure exists.
+
+---
+
+## Why DP?
+
+Consider Fibonacci:
+
+F(5)
+├── F(4)
+│   ├── F(3)
+│   └── F(2)
+└── F(3)
+
+Here, F(3) is calculated multiple times.
+
+DP stores previously computed answers and reuses them.
+
+---
+
+# Two Approaches in DP
+
+## 1. Memoization (Top Down)
+
+- Uses recursion.
+- Stores computed results.
+- Avoids repeated calculations.
+
+### Steps:
+1. Write recursive solution.
+2. Create DP array.
+3. Store answer before returning.
+
+---
+
+## 2. Tabulation (Bottom Up)
+
+- Starts from smallest subproblem.
+- Builds answer iteratively.
+- No recursion.
+
+---
+
+# DP Identification Tricks
+
+Ask these questions:
+
+- Can the problem be divided into smaller subproblems?
+- Are the same subproblems solved repeatedly?
+- Can the answer be built from smaller answers?
+
+If yes, DP may be applicable.
+
+---
+
+# Time Complexity Comparison
+
+| Approach | Time | Space |
+|---------|------|-------|
+| Recursion | O(2^N) | O(N) |
+| Memoization | O(N) | O(N) |
+| Tabulation | O(N) | O(N) |
+| Space Optimization | O(N) | O(1) |
+
+---
+
+# Example: Fibonacci Number
+
+F(0) = 0
+
+F(1) = 1
+
+F(n) = F(n-1) + F(n-2)
+
+---
+
+# DP Steps
+
+1. Identify state.
+2. Write recurrence relation.
+3. Memoize or tabulate.
+4. Optimize space if possible.
+
+---
+
+# Important Terms
+
+- State
+- Transition
+- Base Case
+- Memoization
+- Tabulation
+- Space Optimization
+
+---
+
+# Applications of DP
+
+- Fibonacci Numbers
+- Climbing Stairs
+- House Robber
+- Knapsack
+- Longest Common Subsequence
+- Matrix Chain Multiplication
+- DP on Trees
+- DP on Graphs
+
+---
+
+# Practice Problems
+
+1. Fibonacci Number
+2. Climbing Stairs
+3. Frog Jump
+4. House Robber
+5. Coin Change
+
+---
+
+## Key Takeaway
+
+Dynamic Programming is simply:
+
+"Store previous answers to avoid solving the same problem again."
+
+Master the following order:
+
+Recursion → Memoization → Tabulation → Space Optimization
+
+Happy Coding 🚀
+
+Fibonacci.cpp
+  #include<bits/stdc++.h>
+using namespace std;
+
+//by top-down approach(recurssion + memoization)
+int fib0(int n,vector<int> &DP){
+    if(n<=1) return n;
+
+    if(DP[n] != -1) return DP[n]; //memoization
+
+     DP[n] = fib0(n-1,DP) + fib0(n-2,DP); //storing
+     return DP[n];
+}
+
+//by bottom-up approach(tabulation)
+int fib1(int n,vector<int> &DP){
+    DP[0] = 0;
+    DP[1] = 1;
+
+    for(int i=2;i<=n;i++){
+        DP[i] = DP[i-1]+DP[i-2];
+    }
+    return DP[n];
+
+}
+
+    //by space optimization
+    int fib2(int n){
+    
+    int prev1=1;
+    int prev2=0;
+
+    for(int i=2;i<=n;i++){
+       int curr = prev1+prev2;
+        prev2=prev1;
+        prev1=curr;
+    }
+    return prev1;
+
+}
+
+int main(){
+    int n;
+    cout<<"Enter size"<<endl;
+    cin>>n;
+    vector<int> DP(n+1,-1);
+    cout<<fib0(n,DP)<<endl;
+
+    vector<int> DP1(n+1,-1);
+    cout<<fib1(n,DP1)<<endl;
+
+    cout<<fib2(n)<<endl;
+}
+
