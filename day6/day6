@@ -1,0 +1,270 @@
+📚 Week 18 – Day 6
+Count Derangements (DP + Combinatorics)
+
+This problem introduces an important DP concept:
+
+Counting the number of valid arrangements.
+Using a mathematical recurrence relation.
+DP on combinatorial problems.
+
+A derangement is a permutation in which no element appears in its original position.
+
+## Problem Statement
+
+Given n people numbered from 1 to n.
+
+Count the number of ways such that nobody gets their own item.
+
+This arrangement is called a Derangement.
+
+---
+
+## Example
+
+n = 3
+
+People: 1 2 3
+
+Possible Derangements:
+
+231
+312
+
+Answer = 2
+
+---
+
+## What is a Derangement?
+
+A permutation where:
+
+position i ≠ element i
+
+Example:
+
+123 → Not valid
+
+213 → Not valid
+
+231 → Valid
+
+312 → Valid
+
+---
+
+# Mathematical Observation
+
+Suppose person 1 picks another person's item.
+
+There are (n-1) choices.
+
+After choosing one:
+
+1. The other person takes person 1's item.
+2. The other person does not take person 1's item.
+
+This gives:
+
+D(n) = (n-1) × (D(n-1) + D(n-2))
+
+---
+
+# Base Cases
+
+D(1) = 0
+
+D(2) = 1
+
+---
+
+# Recurrence Relation
+
+D(n) = (n-1) × [D(n-1) + D(n-2)]
+
+---
+
+# DP State
+
+dp[i]
+
+Number of derangements for i elements.
+
+---
+
+## Example
+
+n = 4
+
+D(4)
+
+= 3 × (D(3) + D(2))
+
+= 3 × (2 + 1)
+
+= 9
+
+---
+
+# Time Complexity
+
+Recursion:
+O(2^N)
+
+Memoization:
+O(N)
+
+Tabulation:
+O(N)
+
+Space Optimization:
+O(1)
+
+---
+
+# Applications
+
+- Secret Santa
+- Assignment Problems
+- Permutation Counting
+- Probability Problems
+- Combinatorics
+
+01_recursion.cpp
+#include <iostream>
+using namespace std;
+
+long long solve(int n) {
+
+    if(n == 1)
+        return 0;
+
+    if(n == 2)
+        return 1;
+
+    return (n - 1) *
+           (solve(n - 1) +
+            solve(n - 2));
+}
+
+int main() {
+
+    int n = 4;
+
+    cout << solve(n);
+
+    return 0;
+}
+02_memoization.cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+long long solve(int n, vector<long long>& dp) {
+
+    if(n == 1)
+        return 0;
+
+    if(n == 2)
+        return 1;
+
+    if(dp[n] != -1)
+        return dp[n];
+
+    return dp[n] =
+        (n - 1) *
+        (solve(n - 1, dp) +
+         solve(n - 2, dp));
+}
+
+int main() {
+
+    int n = 4;
+
+    vector<long long> dp(n + 1, -1);
+
+    cout << solve(n, dp);
+
+    return 0;
+}
+03_tabulation.cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+long long countDerangements(int n) {
+
+    vector<long long> dp(n + 1);
+
+    dp[1] = 0;
+    dp[2] = 1;
+
+    for(int i = 3; i <= n; i++) {
+
+        dp[i] =
+            (i - 1) *
+            (dp[i - 1] + dp[i - 2]);
+    }
+
+    return dp[n];
+}
+
+int main() {
+
+    int n = 4;
+
+    cout << countDerangements(n);
+
+    return 0;
+}
+04_space_optimization.cpp
+#include <iostream>
+using namespace std;
+
+long long countDerangements(int n) {
+
+    if(n == 1)
+        return 0;
+
+    if(n == 2)
+        return 1;
+
+    long long prev2 = 0;
+    long long prev1 = 1;
+
+    for(int i = 3; i <= n; i++) {
+
+        long long curr =
+            (i - 1) *
+            (prev1 + prev2);
+
+        prev2 = prev1;
+        prev1 = curr;
+    }
+
+    return prev1;
+}
+
+int main() {
+
+    int n = 4;
+
+    cout << countDerangements(n);
+
+    return 0;
+}
+complexity_analysis.txt
+Recursion:
+Time  : O(2^N)
+Space : O(N)
+
+Memoization:
+Time  : O(N)
+Space : O(N)
+
+Tabulation:
+Time  : O(N)
+Space : O(N)
+
+Space Optimization:
+Time  : O(N)
+Space : O(1)
