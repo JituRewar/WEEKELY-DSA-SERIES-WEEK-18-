@@ -1,0 +1,308 @@
+adjacents
+📚 Week 18 – Day 4
+Maximum Sum of Non-Adjacent Elements
+
+This is one of the most important 1D DP problems because it introduces the Take / Not Take DP Pattern, which later becomes the foundation for:
+
+House Robber
+House Robber II
+Ninja Training
+DP on Subsequences
+Stock
+
+
+
+## Problem Statement
+
+Given an array of integers.
+
+Find the maximum possible sum such that no two selected elements are adjacent.
+
+---
+
+### Example
+
+Input:
+
+arr = [2,1,4,9]
+
+Output:
+
+11
+
+Explanation:
+
+Take:
+2 + 9 = 11
+
+We cannot take:
+4 + 9
+
+because they are adjacent.
+
+---
+
+# Observation
+
+At every index we have two choices:
+
+1. Take the current element.
+2. Skip the current element.
+
+If we take current element:
+
+arr[i] + solve(i-2)
+
+If we don't take:
+
+solve(i-1)
+
+Answer:
+
+max(take, notTake)
+
+---
+
+# Recurrence Relation
+
+f(i) = max(
+            arr[i] + f(i-2),
+            f(i-1)
+         )
+
+---
+
+# Base Cases
+
+i == 0
+
+return arr[0]
+
+i < 0
+
+return 0
+
+---
+
+# DP State
+
+dp[i]
+
+Maximum sum possible from index 0 to i.
+
+---
+
+# Example
+
+arr = [2,1,4,9]
+
+f(3)
+
+Take:
+
+9 + f(1)
+
+Not Take:
+
+f(2)
+
+Answer:
+
+max(10,11)
+
+= 11
+
+---
+
+# Time Complexity
+
+Recursion:
+O(2^N)
+
+Memoization:
+O(N)
+
+Tabulation:
+O(N)
+
+Space Optimization:
+O(1)
+
+---
+
+# Important Pattern
+
+Take:
+arr[i] + f(i-2)
+
+Not Take:
+f(i-1)
+
+Answer:
+max(take, notTake)
+
+---
+
+# Similar Problems
+
+- House Robber
+- House Robber II
+- Delete and Earn
+- Ninja Training
+- Maximum Sum Subsequence
+01_recursion.cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int solve(vector<int>& arr, int index) {
+
+    if(index == 0)
+        return arr[0];
+
+    if(index < 0)
+        return 0;
+
+    int take = arr[index] +
+               solve(arr, index - 2);
+
+    int notTake = solve(arr, index - 1);
+
+    return max(take, notTake);
+}
+
+int main() {
+
+    vector<int> arr = {2,1,4,9};
+
+    cout << solve(arr, arr.size()-1);
+
+    return 0;
+}
+02_memoization.cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int solve(vector<int>& arr, int index,
+          vector<int>& dp) {
+
+    if(index == 0)
+        return arr[0];
+
+    if(index < 0)
+        return 0;
+
+    if(dp[index] != -1)
+        return dp[index];
+
+    int take = arr[index] +
+               solve(arr, index - 2, dp);
+
+    int notTake =
+        solve(arr, index - 1, dp);
+
+    return dp[index] =
+           max(take, notTake);
+}
+
+int main() {
+
+    vector<int> arr = {2,1,4,9};
+
+    int n = arr.size();
+
+    vector<int> dp(n, -1);
+
+    cout << solve(arr, n-1, dp);
+
+    return 0;
+}
+03_tabulation.cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int maximumSum(vector<int>& arr) {
+
+    int n = arr.size();
+
+    vector<int> dp(n);
+
+    dp[0] = arr[0];
+
+    for(int i = 1; i < n; i++) {
+
+        int take = arr[i];
+
+        if(i > 1)
+            take += dp[i-2];
+
+        int notTake = dp[i-1];
+
+        dp[i] = max(take, notTake);
+    }
+
+    return dp[n-1];
+}
+
+int main() {
+
+    vector<int> arr = {2,1,4,9};
+
+    cout << maximumSum(arr);
+
+    return 0;
+}
+04_space_optimization.cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int maximumSum(vector<int>& arr) {
+
+    int prev = arr[0];
+    int prev2 = 0;
+
+    for(int i = 1; i < arr.size(); i++) {
+
+        int take = arr[i];
+
+        if(i > 1)
+            take += prev2;
+
+        int notTake = prev;
+
+        int curr = max(take, notTake);
+
+        prev2 = prev;
+        prev = curr;
+    }
+
+    return prev;
+}
+
+int main() {
+
+    vector<int> arr = {2,1,4,9};
+
+    cout << maximumSum(arr);
+
+    return 0;
+}
+complexity_analysis.txt
+Recursion:
+Time  : O(2^N)
+Space : O(N)
+
+Memoization:
+Time  : O(N)
+Space : O(N)
+
+Tabulation:
+Time  : O(N)
+Space : O(N)
+
+Space Optimization:
+Time  : O(N)
+Space : O(1)
